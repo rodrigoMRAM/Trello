@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 function Navbar(){
     return(
         <div className="flex items-center flex-row  w-full h-12  bg-slate-700">
@@ -5,14 +6,11 @@ function Navbar(){
                 <li>
                     <a className="text-white" href="">Trello</a>
                 </li>
-                <li>
-                    <a className="text-white " href="">Tablas</a>
-                </li>
                 <li className="ml-8">
-                    <a className="text-white " href="">Tablas</a>
+                <Link to="/mistablas" className="text-white " >Tablas</Link>
                 </li>
                 <li className=" bg-blue-600 ml-8 py-1 rounded-md ">
-                    <a className="text-white px-3 py-6 " href="">CREAR</a>
+                    <Link to="/crear" className="text-white px-3 py-6 ">CREAR</Link>
                 </li>
             </ul>
         </div>
