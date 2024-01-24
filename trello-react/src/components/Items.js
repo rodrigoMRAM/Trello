@@ -1,5 +1,23 @@
 import React, { useEffect, useState } from "react";
-function Items() {
+import { useParams } from "react-router-dom";
+
+function Items(props) {
+  console.log(props)
+
+  const marray = []
+  marray.push(props)
+  console.log(marray.length)
+  // const [propsArray, setPropsArray] = useState([]);
+
+  // // Función para agregar un nuevo set de props al array
+  // const agregarPropsAlArray = (props) => {
+  //   setPropsArray([...propsArray, props]);
+  // };
+
+  // agregarPropsAlArray()
+  const { id } = useParams();
+  const [tablaId, setTablaId] = useState([]);
+  const [tablas, setTablas] = useState([]);
   // Estado para almacenar la lista de elementos
   const [items, setItems] = useState([]);
   // Estado para almacenar el valor del nuevo elemento
@@ -51,8 +69,156 @@ function Items() {
     }
   };
 
+  // const [tableID, setTableID] = useState([]);
+  // const listCompanies = async () => {
+  //   try {
+  //     const res = await fetch("http://127.0.0.1:8000/boards/");
+  //     const data = await res.json();
+  //     const datos = data.map((val) => {
+  //       if (val.nombre == id) {
+  //         setTableID(val.id);
+  //       } else {
+  //       }
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  useEffect(() => {
+    traerItems(props.id)
+  }, [tablaId]);
+
+  const [nombreTabla, setnombreTabla] = useState("");
+  const createCard = async (propId) => {
+    try {
+      console.log(propId)
+      const res = await fetch("http://127.0.0.1:8000/cardscreate/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({id_tablas: propId ,nombre: nuevoItem,  color: '2' }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to create company");
+      }
+
+      // const updatedCompanies = tablas.filter(
+      //   (tablasdev) => tablasdev
+      // );
+    // setTablas();
+     
+
+      traerItems(propId);
+      // listCompanies();
+
+      // Después de crear la compañía, volvemos a listar las compañías actualizadas.
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const mostrarItems = async ()=>{
+
+  }
+
+
+
+  const traerItems = async (miid) => {
+    try {
+      if(miid != 0 && miid != undefined ){
+        console.log(miid)
+        const res1 = await fetch(`http://127.0.0.1:8000/cards/${miid}/`);
+        const data1 = await res1.json();
+        const miTabla = data1.map((val) =>  val);
+        setItems(miTabla);
+        console.log(items)
+
+      }
+    } catch (error) {
+      console.log(error);
+      
+    }
+  };
+
+
+
+  const handleDelete = async (itemId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/card/delete/${itemId}/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            // Puedes agregar otras cabeceras según tus necesidades, como la autenticación
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete company");
+      }
+
+      // Actualizar la lista de empresas después de la eliminación
+      const updatedCompanies = items.filter(
+        (tablasdev) => tablasdev.id !== itemId
+      );
+      setItems(updatedCompanies);
+      setNuevoItem(" ")
+
+    } catch (error) {
+      console.error("Error deleting company:", error);
+    }
+  };
+
+
+
+  const [dragging, setDragging] = useState(false);
+  // const [itemss, setItemss] = useState([
+  //   { id: 1, content: 'Item 1' },
+  //   { id: 2, content: 'Item 2' },
+  //   { id: 3, content: 'Item 3' },
+  // ]);
+  const handleDragStart = (e, index) => {
+    e.dataTransfer.setData('text/plain', index);
+    setDragging(true);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+//DRAGGEDINDEX ES EL QUE SE MUEVE devuelve number
+// DROPINDEX ES EL QUE ES REEMPLAZADO devuelve string
+  const handleDrop = (e, dropIndex) => {
+    e.preventDefault();
+    const draggedIndex = e.dataTransfer.getData('text/plain');
+    console.log(typeof(draggedIndex))
+    console.log(typeof(dropIndex))
+    const newItems = [...items];
+    const draggedItem = newItems[draggedIndex];
+
+    // Remove the item from its original position
+    newItems.splice(draggedIndex, 1);
+
+    // Insert the item at the new position
+    newItems.splice(dropIndex, 0, draggedItem);
+
+    setItems(newItems);
+    setDragging(false);
+  };
+
+
+
+
+
+
+
+
   return (
     <>
+
       {/* <div className="nombreTabla flex mt-10">
               
                     <form className="mt-4 ml-4" onSubmit={manejarSubmit1}>
@@ -65,14 +231,26 @@ function Items() {
       <div className="ListadeItems px-2">
         <ul className="">
           {items.map((item, index) => (
-            <li className=" w-full bg-slate-800 mt-3 rounded-lg" key={index}>
-              <p className="itemp">{item}</p>
+            <li info={index} className=" w-full bg-slate-800 mt-3 rounded-lg flex justify-between"
+            draggable
+            onDragStart={(e) => handleDragStart(e, index+1)}
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, index+1)} 
+            key={index}>
+              <p className="itemp">{item.nombre} </p>
+              <button
+              id={item.id + "h"}
+              className="transition duration-150"
+              onClick={() => handleDelete(item.id)}
+            >
+              <span class="material-symbols-outlined">delete</span>
+            </button>
             </li>
           ))}
         </ul>
         <details className="mt-3 ">
           <summary className="hover:bg-sky-700 rounded-lg">+ Add Card</summary>
-          <form onSubmit={manejarSubmit}>
+          <form method="POST" onSubmit={manejarSubmit}>
             <input
               type="text"
               className="rounded-lg  w-full bg-slate-800 mt-2"
@@ -82,13 +260,15 @@ function Items() {
             <button
               type="submit"
               className=" mt-3 px-2 rounded- bg-slate-600 rounded-lg ml-2"
-              onClick={agregarItem}
+              onClick={()=>createCard(props.id)}
+              // onClick={agregarItem}
             >
               Add
             </button>
           </form>
         </details>
       </div>
+      
     </>
   );
 }

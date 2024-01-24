@@ -17,6 +17,9 @@ class Tables(models.Model):
 class Cards(models.Model):
     id_tablas = models.ForeignKey(Tables, verbose_name="", on_delete=models.CASCADE)
     nombre = models.CharField(max_length=50)
-    posicion = models.CharField(max_length=50)
+    posicion = models.IntegerField(default=1)
     color = models.CharField( max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return f' {self.id_tablas} {self.posicion}{self.nombre}'
     

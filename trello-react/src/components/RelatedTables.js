@@ -3,7 +3,16 @@ import Items from "./Items";
 import { useParams } from "react-router-dom";
 
 function RelatedTables() {
+
+
   const { id } = useParams();
+  const [userID, setUserID] = useState([]);
+  const [tablas, setTablas] = useState([]);
+  useEffect(() => {
+
+    listCompanies();
+    traerTablas(userID)
+  }, [userID]);
 
   const [companies, setCompanies] = useState([]);
   const [newCompanyName, setNewCompanyName] = useState("");
@@ -18,15 +27,22 @@ function RelatedTables() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ nombre: nombreTabla, identificacion: caca }),
+        body: JSON.stringify({ nombre: nombreTabla, identificacion: userID }),
       });
-
       if (!res.ok) {
         throw new Error("Failed to create company");
       }
 
+      // const updatedCompanies = tablas.filter(
+      //   (tablasdev) => tablasdev
+      // );
+    // setTablas();
+     
+
+      traerTablas(userID);
+      // listCompanies();
+
       // Después de crear la compañía, volvemos a listar las compañías actualizadas.
-      //   listCompanies();
     } catch (error) {
       console.log(error);
     }
@@ -99,7 +115,8 @@ function RelatedTables() {
 
   const manejarSubmit = (e) => {
     e.preventDefault(); // Evitar el comportamiento predeterminado del formulario
-    agregarItem();
+     agregarItem();
+     traerTablas();
     // Realizar la acción deseada con el valor del input
 
     // Puedes agregar lógica adicional aquí, como enviar datos al servidor, etc.
@@ -109,38 +126,46 @@ function RelatedTables() {
 
   //   OBTENER IDENTIFIACION
 
-  const [caca, setcaca] = useState([]);
+  
+ 
   const listCompanies = async () => {
     try {
       const res = await fetch("http://127.0.0.1:8000/boards/");
       const data = await res.json();
-      const wa = data.map((val) => {
+      const datos = data.map((val) => {
         if (val.nombre == id) {
-          setcaca(val.id);
+          setUserID(val.id);
+          
         } else {
         }
+        
       });
     } catch (error) {
       console.log(error);
     }
   };
+
+
   //   TRAER TABLAS DE LA BASE DE DATOS
-  const [tablas, setTablas] = useState([]);
-  const traerTablas = async () => {
+  
+  const traerTablas = async (miid) => {
     try {
-      const res1 = await fetch(`http://127.0.0.1:8000/tablas/27/`);
-      const data1 = await res1.json();
-      const miTabla = data1.map((val) =>  val);
-      console.log()
-      setTablas(miTabla);
+      if(miid != 0 && miid != undefined ){
+        console.log(miid)
+        const res1 = await fetch(`http://127.0.0.1:8000/tablas/${miid}/`);
+        const data1 = await res1.json();
+        const miTabla = data1.map((val) =>  val);
+        setTablas(miTabla);
+        console.log(miTabla)
+
+      }
     } catch (error) {
       console.log(error);
+      
     }
   };
-  useEffect(() => {
-    listCompanies();
-    traerTablas();
-  }, []);
+
+
 
 
   const handleDelete = async (tablaId) => {
@@ -164,7 +189,8 @@ function RelatedTables() {
       const updatedCompanies = tablas.filter(
         (tablasdev) => tablasdev.id !== tablaId
       );
-      setcaca(updatedCompanies);
+      setTablas(updatedCompanies);
+
     } catch (error) {
       console.error("Error deleting company:", error);
     }
@@ -208,7 +234,7 @@ function RelatedTables() {
               <span class="material-symbols-outlined">delete</span>
             </button>
             </p>
-            <Items />
+            <Items id={item.id}/>
           </div>
         </>
       ))}
