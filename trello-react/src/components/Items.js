@@ -2,18 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 function Items(props) {
-  console.log(props)
-
-  const marray = []
-  marray.push(props)
-  console.log(marray.length)
-  // const [propsArray, setPropsArray] = useState([]);
-
-  // // Función para agregar un nuevo set de props al array
-  // const agregarPropsAlArray = (props) => {
-  //   setPropsArray([...propsArray, props]);
-  // };
-
   // agregarPropsAlArray()
   const { id } = useParams();
   const [tablaId, setTablaId] = useState([]);
@@ -39,11 +27,6 @@ function Items(props) {
   const manejarSubmit = (e) => {
     e.preventDefault(); // Evitar el comportamiento predeterminado del formulario
 
-    // Realizar la acción deseada con el valor del input
-
-    // Puedes agregar lógica adicional aquí, como enviar datos al servidor, etc.
-
-    // Limpiar el input después de enviar
   };
 
   const [tabla, setTabla] = useState(""); // Estado para el elemento
@@ -51,11 +34,6 @@ function Items(props) {
   const manejarSubmit1 = (e) => {
     e.preventDefault(); // Evitar el comportamiento predeterminado del formulario
 
-    // Realizar la acción deseada con el valor del input
-
-    // Puedes agregar lógica adicional aquí, como enviar datos al servidor, etc.
-
-    // Limpiar el input después de enviar
   };
 
   const manejarCambios = (e) => {
@@ -69,21 +47,7 @@ function Items(props) {
     }
   };
 
-  // const [tableID, setTableID] = useState([]);
-  // const listCompanies = async () => {
-  //   try {
-  //     const res = await fetch("http://127.0.0.1:8000/boards/");
-  //     const data = await res.json();
-  //     const datos = data.map((val) => {
-  //       if (val.nombre == id) {
-  //         setTableID(val.id);
-  //       } else {
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+
   useEffect(() => {
     traerItems(props.id)
   }, [tablaId]);
@@ -175,13 +139,13 @@ function Items(props) {
 
 
   const [dragging, setDragging] = useState(false);
-  // const [itemss, setItemss] = useState([
-  //   { id: 1, content: 'Item 1' },
-  //   { id: 2, content: 'Item 2' },
-  //   { id: 3, content: 'Item 3' },
-  // ]);
+
+  const [valorPosicionId, setvalorPosicionId] = useState("")
   const handleDragStart = (e, index) => {
     e.dataTransfer.setData('text/plain', index);
+    setvalorPosicionId(e.target.id)
+    console.log(e.target.id)
+
     setDragging(true);
   };
 
@@ -191,20 +155,62 @@ function Items(props) {
 
 //DRAGGEDINDEX ES EL QUE SE MUEVE devuelve number
 // DROPINDEX ES EL QUE ES REEMPLAZADO devuelve string
-  const handleDrop = (e, dropIndex) => {
+  const handleDrop = (e, dropIndex, nuevoId) => {
     e.preventDefault();
+    console.log(nuevoId)
+    console.log(e.target.id)
+    console.log(dropIndex)
     const draggedIndex = e.dataTransfer.getData('text/plain');
-    console.log(typeof(draggedIndex))
+    console.log(e)
+    console.log(draggedIndex)
     console.log(typeof(dropIndex))
+    const modificarPosicion = async (valorViejo) => {
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/update/${valorViejo}/`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({posicion: dropIndex}),
+        });
+        if (!res.ok) {
+          throw new Error("Failed to create company");
+        }
+  
+
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    modificarPosicion(valorPosicionId)
+    const modificarPosicion2 = async (valorViejo) => {
+      try {
+        const res = await fetch(`http://127.0.0.1:8000/update/${valorViejo}/`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({posicion: draggedIndex}),
+        });
+        if (!res.ok) {
+          throw new Error("Failed to create company");
+        }
+        
+        
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    modificarPosicion2(nuevoId)
     const newItems = [...items];
     const draggedItem = newItems[draggedIndex];
-
+    
     // Remove the item from its original position
     newItems.splice(draggedIndex, 1);
-
+    
     // Insert the item at the new position
     newItems.splice(dropIndex, 0, draggedItem);
-
+    
     setItems(newItems);
     setDragging(false);
   };
@@ -219,25 +225,17 @@ function Items(props) {
   return (
     <>
 
-      {/* <div className="nombreTabla flex mt-10">
-              
-                    <form className="mt-4 ml-4" onSubmit={manejarSubmit1}>
-                    <input placeholder="Introduce nombre de Tabla" type="text" className=" bg-slate-500 rounded-sm text-white" onChange={manejarCambios} value={tabla} name="" id="" />
-                    <button type="submit" className=" bg-slate-600 rounded-sm ml-2 px-2" onClick={addItem} >+</button>
-                    </form> 
-                    <p className="text-white pl-5 pt-5 text-xl tracking-wider "> {valor}</p>
-                    </div> */}
-
       <div className="ListadeItems px-2">
         <ul className="">
           {items.map((item, index) => (
-            <li info={index} className=" w-full bg-slate-800 mt-3 rounded-lg flex justify-between"
+            <li info={index} id={item.id} className=" w-full bg-slate-800 mt-3 rounded-lg flex justify-between"
             draggable
-            onDragStart={(e) => handleDragStart(e, index+1)}
+            onDragStart={(e) => handleDragStart(e, index, item.id)}
             onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, index+1)} 
+            onDrop={(e) => handleDrop(e, index, item.id)} 
             key={index}>
               <p className="itemp">{item.nombre} </p>
+              <p>{item.id}</p>
               <button
               id={item.id + "h"}
               className="transition duration-150"

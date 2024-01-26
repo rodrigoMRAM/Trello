@@ -11,7 +11,7 @@ class Tables(models.Model):
     nombre = models.CharField(max_length=50,verbose_name="nombre")
     identificacion = models.ForeignKey(Board, on_delete=models.CASCADE)
     def __str__(self):
-        return f'{self.identificacion} {self.nombre}'
+        return f'{self.id} {self.identificacion} {self.nombre}'
     
 
 class Cards(models.Model):
@@ -21,5 +21,5 @@ class Cards(models.Model):
     color = models.CharField( max_length=50, null=True, blank=True)
 
     def __str__(self):
-        return f' {self.id_tablas} {self.posicion}{self.nombre}'
+        return f' {self.id}  {self.id_tablas} {self.posicion}{self.nombre}'
     

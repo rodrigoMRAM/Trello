@@ -17,3 +17,9 @@ class CardsSerializer(ModelSerializer):
     class Meta:
         model = Cards
         fields = "__all__"
+
+
+class ModificarSerializer(ModelSerializer):
+    class Meta:
+        model = Cards
+        fields =["posicion"]

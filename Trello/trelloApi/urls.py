@@ -14,4 +14,6 @@ urlpatterns = [
     path('cardscreate/', CardsCreateView.as_view(), name='tabla-create'),
     path('tabla/delete/<int:pk>/', TablaDeleteView.as_view(), name='objeto-create'),
     path('card/delete/<int:pk>/', CardDeleteView.as_view(), name='objeto-create'),
+
+    path('update/<int:pk>/', CardsUpdateView.as_view(), name='update_tumodelo'),
 ]
