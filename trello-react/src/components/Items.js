@@ -50,7 +50,7 @@ function Items(props) {
 
   useEffect(() => {
     traerItems(props.id)
-  }, [tablaId]);
+  }, [props.id]);
 
   const [nombreTabla, setnombreTabla] = useState("");
   const createCard = async (propId) => {
@@ -72,7 +72,7 @@ function Items(props) {
       // );
     // setTablas();
      
-
+      setNuevoItem("")
       traerItems(propId);
       // listCompanies();
 
@@ -141,10 +141,12 @@ function Items(props) {
   const [dragging, setDragging] = useState(false);
 
   const [valorPosicionId, setvalorPosicionId] = useState("")
-  const handleDragStart = (e, index) => {
+  const [posicionId, setvalorPosicion] = useState("")
+  const handleDragStart = (e, index ,posicion) => {
     e.dataTransfer.setData('text/plain', index);
     setvalorPosicionId(e.target.id)
-    console.log(e.target.id)
+    setvalorPosicion(posicion)
+    console.log(posicion)
 
     setDragging(true);
   };
@@ -155,9 +157,9 @@ function Items(props) {
 
 //DRAGGEDINDEX ES EL QUE SE MUEVE devuelve number
 // DROPINDEX ES EL QUE ES REEMPLAZADO devuelve string
-  const handleDrop = (e, dropIndex, nuevoId) => {
+  const handleDrop = (e, dropIndex, nuevoId, posicionnueva) => {
     e.preventDefault();
-    console.log(nuevoId)
+    console.log(posicionnueva)
     console.log(e.target.id)
     console.log(dropIndex)
     const draggedIndex = e.dataTransfer.getData('text/plain');
@@ -171,7 +173,7 @@ function Items(props) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({posicion: dropIndex}),
+          body: JSON.stringify({posicion: posicionnueva}),
         });
         if (!res.ok) {
           throw new Error("Failed to create company");
@@ -182,7 +184,7 @@ function Items(props) {
         console.log(error);
       }
     };
-    modificarPosicion(valorPosicionId)
+    // modificarPosicion(valorPosicionId)
     const modificarPosicion2 = async (valorViejo) => {
       try {
         const res = await fetch(`http://127.0.0.1:8000/update/${valorViejo}/`, {
@@ -190,7 +192,7 @@ function Items(props) {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({posicion: draggedIndex}),
+          body: JSON.stringify({posicion: posicionId}),
         });
         if (!res.ok) {
           throw new Error("Failed to create company");
@@ -201,20 +203,31 @@ function Items(props) {
         console.log(error);
       }
     };
-    modificarPosicion2(nuevoId)
-    const newItems = [...items];
-    const draggedItem = newItems[draggedIndex];
-    
-    // Remove the item from its original position
-    newItems.splice(draggedIndex, 1);
-    
-    // Insert the item at the new position
-    newItems.splice(dropIndex, 0, draggedItem);
-    
-    setItems(newItems);
-    setDragging(false);
-  };
+    // modificarPosicion2(nuevoId)
+    const pasos = async() =>{
+      const newItems = [...items];
+      const draggedItem = newItems[draggedIndex];
+      
+      // Remove the item from its original position
+      newItems.splice(draggedIndex, 1);
+      
+      // Insert the item at the new position
+      newItems.splice(dropIndex, 0, draggedItem);
+      
+      setItems(newItems);
+      setDragging(false);
+      traerItems(props.id)
+    }
+    const ejecutarCambios =async  ()=>{
+      await modificarPosicion(valorPosicionId)
+      await  modificarPosicion2(nuevoId)
+      await pasos()
+  
+    }
 
+    ejecutarCambios();
+  };
+  
 
 
 
@@ -230,12 +243,12 @@ function Items(props) {
           {items.map((item, index) => (
             <li info={index} id={item.id} className=" w-full bg-slate-800 mt-3 rounded-lg flex justify-between"
             draggable
-            onDragStart={(e) => handleDragStart(e, index, item.id)}
+            onDragStart={(e) => handleDragStart(e, index, item.posicion)}
             onDragOver={handleDragOver}
-            onDrop={(e) => handleDrop(e, index, item.id)} 
+            onDrop={(e) => handleDrop(e, index,item.id, item.posicion)} 
             key={index}>
               <p className="itemp">{item.nombre} </p>
-              <p>{item.id}</p>
+              {/* <p>{item.id}</p> */}
               <button
               id={item.id + "h"}
               className="transition duration-150"

@@ -5,9 +5,9 @@ import { Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <div className="App">
+    <div className="App w-full">
       <Navbar></Navbar>
-      <div className="bar flex ">
+      <div className="bar flex overflow-y-auto ">
         <SideBar></SideBar>
         <Outlet />
       </div>

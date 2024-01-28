@@ -6,6 +6,8 @@ from .serializer import ModificarSerializer, TablesSerializer , BoardSerializer,
 from rest_framework import generics
 # Create your views here.
 
+
+#SHOW BOARDS
 @api_view(["GET"])
 def getBoards(request):
     boards = Board.objects.all()
@@ -13,6 +15,7 @@ def getBoards(request):
     print(boards)
     return Response(serializar.data)
 
+#SHOW TABLES
 @api_view(["GET"])
 def getTablas(request):
     tables = Tables.objects.all()
@@ -20,7 +23,7 @@ def getTablas(request):
     print(tables)
     return Response(serializar.data)
 
-
+#SHOW TABLE BY ID
 @api_view(["GET"])
 def getTables(request,id):
     tables = Tables.objects.filter(identificacion=id)
@@ -28,7 +31,7 @@ def getTables(request,id):
     print(tables)
     return Response(serializar.data)
 
-
+#SHOW CARDS ITEMS BY POSITION
 @api_view(["GET"])
 def getCards(request,id):
     tables = Cards.objects.filter(id_tablas=id).order_by('posicion')
@@ -49,11 +52,11 @@ class ObjetoCreateView(generics.CreateAPIView):
 class BoardDeleteView(generics.DestroyAPIView):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
-
+#DELETE TABLE
 class TablaDeleteView(generics.DestroyAPIView):
     queryset = Tables.objects.all()
     serializer_class = TablesSerializer
-
+# DELETE CARDS
 class CardDeleteView(generics.DestroyAPIView):
     queryset = Cards.objects.all()
     serializer_class = CardsSerializer
@@ -69,7 +72,7 @@ class TablesDeleteView(generics.DestroyAPIView):
     queryset = Tables.objects.all()
     serializer_class = TablesSerializer
 
-#CARD CREATINO
+#CARD CREATION
 
 class CardsCreateView(generics.CreateAPIView):
     queryset = Cards.objects.all()

@@ -4,7 +4,7 @@ function Navbar(){
         <div className="flex items-center flex-row  w-full h-12  bg-slate-700">
             <ul className="flex h-12 items-center ">
                 <li>
-                    <a className="text-white" href="">Trello</a>
+                    <a className="text-white" href="">Tasks</a>
                 </li>
                 <li className="ml-8">
                 <Link to="/mistablas" className="text-white " >Tablas</Link>
