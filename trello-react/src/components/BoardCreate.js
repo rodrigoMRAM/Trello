@@ -15,6 +15,7 @@ function TableCreate() {
         },
         body: JSON.stringify({ nombre: newCompanyName }),
       });
+      navigate("/mistablas");
 
       if (!res.ok) {
         throw new Error("Failed to create company");
@@ -29,7 +30,8 @@ function TableCreate() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate("/mistablas");
+
+    
 
     // Realizar acciones de envío de datos (puedes hacer una solicitud fetch aquí)
 

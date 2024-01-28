@@ -28,3 +28,16 @@ h1 {
 summary {
   list-style: none; /* Quita la decoración de la lista */
 }
+
+
+[draggable=true] {
+  cursor: pointer;
+
+}
+.prueba:hover{
+  border: 1px solid white;
+}
+
+.pruebita:active{
+  background-color: #2980b9;
+}

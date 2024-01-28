@@ -153,19 +153,22 @@ function Items(props) {
 
   const handleDragOver = (e) => {
     e.preventDefault();
+    console.log(e.target.id)
+
+    
   };
 
 //DRAGGEDINDEX ES EL QUE SE MUEVE devuelve number
 // DROPINDEX ES EL QUE ES REEMPLAZADO devuelve string
   const handleDrop = (e, dropIndex, nuevoId, posicionnueva) => {
     e.preventDefault();
-    console.log(posicionnueva)
-    console.log(e.target.id)
-    console.log(dropIndex)
+    // console.log(posicionnueva)
+    // console.log(e.target.id)
+    // console.log(dropIndex)
     const draggedIndex = e.dataTransfer.getData('text/plain');
-    console.log(e)
-    console.log(draggedIndex)
-    console.log(typeof(dropIndex))
+    // console.log(e)
+    // console.log(draggedIndex)
+    // console.log(typeof(dropIndex))
     const modificarPosicion = async (valorViejo) => {
       try {
         const res = await fetch(`http://127.0.0.1:8000/update/${valorViejo}/`, {
@@ -219,9 +222,9 @@ function Items(props) {
       traerItems(props.id)
     }
     const ejecutarCambios =async  ()=>{
+      await pasos()
       await modificarPosicion(valorPosicionId)
       await  modificarPosicion2(nuevoId)
-      await pasos()
   
     }
 
@@ -241,7 +244,7 @@ function Items(props) {
       <div className="ListadeItems px-2">
         <ul className="">
           {items.map((item, index) => (
-            <li info={index} id={item.id} className=" w-full bg-slate-800 mt-3 rounded-lg flex justify-between"
+            <li info={index} id={item.id} className=" w-full bg-slate-800 mt-3 rounded-lg flex justify-between prueba break-all min-h-full pruebita"
             draggable
             onDragStart={(e) => handleDragStart(e, index, item.posicion)}
             onDragOver={handleDragOver}
@@ -253,7 +256,7 @@ function Items(props) {
               id={item.id + "h"}
               className="transition duration-150"
               onClick={() => handleDelete(item.id)}
-            >
+              >
               <span class="material-symbols-outlined">delete</span>
             </button>
             </li>
