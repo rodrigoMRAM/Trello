@@ -39,6 +39,7 @@ def getCards(request,id):
     print(tables)
     return Response(serializar.data)
 
+
     
 
 # BOARD CREATION
