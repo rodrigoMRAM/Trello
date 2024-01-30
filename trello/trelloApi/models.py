@@ -21,5 +21,5 @@ class Cards(models.Model):
     color = models.CharField( max_length=50, null=True, blank=True)
 
     def __str__(self):
-        return f' {self.id}  {self.id_tablas} {self.posicion}{self.nombre}'
+        return f' {self.id}  {self.id_tablas} {self.posicion}{self.color}{self.nombre}'
     

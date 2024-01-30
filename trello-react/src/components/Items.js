@@ -61,7 +61,7 @@ function Items(props) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id_tablas: propId ,nombre: nuevoItem,  color: '2' }),
+        body: JSON.stringify({id_tablas: propId ,nombre: nuevoItem}),
       });
       if (!res.ok) {
         throw new Error("Failed to create company");
@@ -155,7 +155,7 @@ function Items(props) {
     e.preventDefault();
     console.log(e.target.id)
 
-    
+
   };
 
 //DRAGGEDINDEX ES EL QUE SE MUEVE devuelve number
@@ -181,7 +181,7 @@ function Items(props) {
         if (!res.ok) {
           throw new Error("Failed to create company");
         }
-  
+        traerItems(props.id)
 
       } catch (error) {
         console.log(error);
@@ -200,7 +200,7 @@ function Items(props) {
         if (!res.ok) {
           throw new Error("Failed to create company");
         }
-        
+        traerItems(props.id)
         
       } catch (error) {
         console.log(error);
@@ -234,8 +234,46 @@ function Items(props) {
 
 
 
+const [coloress, setColoress] = useState("hidden")
+const colores =(e)=>{
+  console.log(e)
+  const miDato = document.getElementById(`${e}c`)
+  miDato.classList.toggle('hidden')
+
+}
+
+const [coloresss, setColoresss] = useState("")
+const coloresse =(e)=>{
+  console.log(e)
+  const miDato1 = document.getElementById(`${e}cc`)
+  miDato1.classList.toggle('hidden')
+
+}
+
+const setColor = async (id,colorNew)=>{
+  console.log(colorNew)
+  const miDato1 = document.getElementById(`${id}c`)
+  miDato1.classList.toggle('hidden')
+  
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/color/${id}/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({color: colorNew  }),
+      });
+      if (!res.ok) {
+        throw new Error("Failed to create company");
+      }
+      traerItems(props.id)
+
+    } catch (error) {
+      console.log(error);
+    }
 
 
+}
 
 
   return (
@@ -244,21 +282,33 @@ function Items(props) {
       <div className="ListadeItems px-2">
         <ul className="">
           {items.map((item, index) => (
-            <li info={index} id={item.id} className=" w-full bg-slate-800 mt-3 rounded-lg flex justify-between prueba break-all min-h-full pruebita"
+            <li info={index} id={item.id} className={`flex items-center w-full bg-slate-800 mt-3 rounded-lg justify-between prueba break-all min-h-10 pruebita bg-${item.color}-600`}
             draggable
+            style={{backgroundColor: item.color}}
             onDragStart={(e) => handleDragStart(e, index, item.posicion)}
-            onDragOver={handleDragOver}
+            onDragOver={ handleDragOver}
             onDrop={(e) => handleDrop(e, index,item.id, item.posicion)} 
             key={index}>
-              <p className="itemp">{item.nombre} </p>
+              <p id={`${item.id}ite`} className="itemp pl-2 text-lg">{item.nombre} </p>
               {/* <p>{item.id}</p> */}
+              <div className="colores flex ">
+
+<div id={`${item.id}c`} className= {`flex ${coloress} items-center pl-1 pr-1 bg-slate-900`}>
+<div id={`${item.id}cc`}  className={`w-5 h-4 bg-slate-800  mr-2`} onClick={(e)=>setColor(item.id,"rgb(30 41 59)")}></div>
+  <div id="red" className="w-5 h-4 bg-red-600 mr-2" onClick={(e)=>setColor(item.id,"red")}></div>
+  <div id="green" className="w-5 h-4 bg-green-600"  onClick={(e)=>setColor(item.id,"green")}>    </div>
+  <div id="yellow" className="w-5 h-4 bg-amber-700	 ml-2" onClick={(e)=>setColor(item.id,"rgb(180 83 9)")} >    </div>
+</div>
+<span alt="Elegir color" class="material-symbols-outlined" onClick={(e)=>colores(item.id)}>palette</span>
               <button
               id={item.id + "h"}
               className="transition duration-150"
               onClick={() => handleDelete(item.id)}
               >
-              <span class="material-symbols-outlined">delete</span>
+               
+              <span class="material-symbols-outlined pr-2">delete</span>
             </button>
+                </div>
             </li>
           ))}
         </ul>
@@ -267,13 +317,14 @@ function Items(props) {
           <form method="POST" onSubmit={manejarSubmit}>
             <input
               type="text"
-              className="rounded-lg  w-full bg-slate-800 mt-2"
+              className="rounded-lg  w-full bg-slate-800 mt-2 min-h-20 items-start"
               value={nuevoItem}
+              placeholder="Introducir titulo para la tarjeta..."
               onChange={handleInputChange}
             />
             <button
               type="submit"
-              className=" mt-3 px-2 rounded- bg-slate-600 rounded-lg ml-2"
+              className=" mt-3 px-2 rounded- bg-blue-600 rounded-lg ml-2"
               onClick={()=>createCard(props.id)}
               // onClick={agregarItem}
             >

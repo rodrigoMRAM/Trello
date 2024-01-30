@@ -23,3 +23,15 @@ class ModificarSerializer(ModelSerializer):
     class Meta:
         model = Cards
         fields =["posicion"]
+
+
+class ModificarColorSerializer(ModelSerializer):
+    class Meta:
+        model = Cards
+        fields =["color"]
+
+
+class ModificarNoColorSerializer(ModelSerializer):
+    class Meta:
+        model = Cards
+        fields =["id_tablas","nombre", "posicion"]

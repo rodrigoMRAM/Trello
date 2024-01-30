@@ -172,8 +172,8 @@ function RelatedTables() {
 
       {tablas?.map((item) => (
         <>
-          <div className="  bg-slate-950 w-80 ml-4 h-fit rounded-lg pb-6">
-            <p  className="text-white pl-5 pt-5 text-xl tracking-wider ">
+          <div className="  bg-slate-950  w-72 ml-4 h-fit rounded-lg pb-6">
+            <p  className="text-white pl-5 pt-5  text-2xl tracking-wider ">
               {" "}
               {item.nombre} <button
               id={item.id + "h"}

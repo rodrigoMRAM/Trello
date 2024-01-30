@@ -16,4 +16,5 @@ urlpatterns = [
     path('card/delete/<int:pk>/', CardDeleteView.as_view(), name='objeto-create'),
 
     path('update/<int:pk>/', CardsUpdateView.as_view(), name='update_tumodelo'),
+    path('color/<str:pk>/', CardsColorView.as_view(), name='color'),
 ]

@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializer import ModificarSerializer, TablesSerializer , BoardSerializer,CardsSerializer
+from .serializer import ModificarSerializer, TablesSerializer , BoardSerializer,CardsSerializer,ModificarColorSerializer
 from rest_framework import generics
 # Create your views here.
 
@@ -101,6 +101,25 @@ class CardsUpdateView(generics.UpdateAPIView):
         print(instancia.posicion)
         # Modifica los valores según tus necesidades
         instancia.posicion = request.data.get('posicion', instancia.posicion)
+        # Puedes agregar lógica adicional aquí para modificar otros campos
+
+        # Guarda los cambios
+        instancia.save()
+
+        # Devuelve la respuesta
+        serializer = self.get_serializer(instancia)
+        return Response(serializer.data)
+    
+class CardsColorView(generics.UpdateAPIView):
+    queryset = Cards.objects.all()
+    serializer_class = ModificarColorSerializer
+
+    def update(self, request, *args, **kwargs):
+        # Obten el objeto que deseas actualizar
+        instancia = self.get_object()
+        print(instancia.color)
+        # Modifica los valores según tus necesidades
+        instancia.color = request.data.get('color', instancia.color)
         # Puedes agregar lógica adicional aquí para modificar otros campos
 
         # Guarda los cambios
