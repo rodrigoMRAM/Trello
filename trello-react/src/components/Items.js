@@ -26,14 +26,12 @@ function Items(props) {
 
   const manejarSubmit = (e) => {
     e.preventDefault(); // Evitar el comportamiento predeterminado del formulario
-
   };
 
   const [tabla, setTabla] = useState(""); // Estado para el elemento
   const [valor, setValor] = useState("");
   const manejarSubmit1 = (e) => {
     e.preventDefault(); // Evitar el comportamiento predeterminado del formulario
-
   };
 
   const manejarCambios = (e) => {
@@ -47,21 +45,20 @@ function Items(props) {
     }
   };
 
-
   useEffect(() => {
-    traerItems(props.id)
+    traerItems(props.id);
   }, [props.id]);
 
   const [nombreTabla, setnombreTabla] = useState("");
   const createCard = async (propId) => {
     try {
-      console.log(propId)
+      console.log(propId);
       const res = await fetch("http://127.0.0.1:8000/cardscreate/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id_tablas: propId ,nombre: nuevoItem}),
+        body: JSON.stringify({ id_tablas: propId, nombre: nuevoItem }),
       });
       if (!res.ok) {
         throw new Error("Failed to create company");
@@ -70,42 +67,30 @@ function Items(props) {
       // const updatedCompanies = tablas.filter(
       //   (tablasdev) => tablasdev
       // );
-    // setTablas();
-     
-      setNuevoItem("")
+      // setTablas();
+
+      setNuevoItem("");
       traerItems(propId);
       // listCompanies();
-
-      // Después de crear la compañía, volvemos a listar las compañías actualizadas.
     } catch (error) {
       console.log(error);
     }
   };
-
-  const mostrarItems = async ()=>{
-
-  }
-
-
 
   const traerItems = async (miid) => {
     try {
-      if(miid != 0 && miid != undefined ){
-        console.log(miid)
+      if (miid != 0 && miid != undefined) {
+        console.log(miid);
         const res1 = await fetch(`http://127.0.0.1:8000/cards/${miid}/`);
         const data1 = await res1.json();
-        const miTabla = data1.map((val) =>  val);
+        const miTabla = data1.map((val) => val);
         setItems(miTabla);
-        console.log(items)
-
+        console.log(items);
       }
     } catch (error) {
       console.log(error);
-      
     }
   };
-
-
 
   const handleDelete = async (itemId) => {
     try {
@@ -129,186 +114,196 @@ function Items(props) {
         (tablasdev) => tablasdev.id !== itemId
       );
       setItems(updatedCompanies);
-      setNuevoItem(" ")
-
+      setNuevoItem(" ");
     } catch (error) {
       console.error("Error deleting company:", error);
     }
   };
 
-
-
   const [dragging, setDragging] = useState(false);
 
-  const [valorPosicionId, setvalorPosicionId] = useState("")
-  const [posicionId, setvalorPosicion] = useState("")
-  const handleDragStart = (e, index ,posicion) => {
-    e.dataTransfer.setData('text/plain', index);
-    setvalorPosicionId(e.target.id)
-    setvalorPosicion(posicion)
-    console.log(posicion)
+  const [valorPosicionId, setvalorPosicionId] = useState("");
+  const [posicionId, setvalorPosicion] = useState("");
+  const handleDragStart = (e, index, posicion) => {
+    e.dataTransfer.setData("text/plain", index);
+    setvalorPosicionId(e.target.id);
+    setvalorPosicion(posicion);
+    console.log(posicion);
 
     setDragging(true);
   };
 
   const handleDragOver = (e) => {
     e.preventDefault();
-    console.log(e.target.id)
-
-
+    console.log(e.target.id);
   };
 
-//DRAGGEDINDEX ES EL QUE SE MUEVE devuelve number
-// DROPINDEX ES EL QUE ES REEMPLAZADO devuelve string
+  //DRAGGEDINDEX ES EL QUE SE MUEVE devuelve number
+  // DROPINDEX ES EL QUE ES REEMPLAZADO devuelve string
   const handleDrop = (e, dropIndex, nuevoId, posicionnueva) => {
     e.preventDefault();
-    // console.log(posicionnueva)
-    // console.log(e.target.id)
-    // console.log(dropIndex)
-    const draggedIndex = e.dataTransfer.getData('text/plain');
-    // console.log(e)
-    // console.log(draggedIndex)
-    // console.log(typeof(dropIndex))
+    const draggedIndex = e.dataTransfer.getData("text/plain");
     const modificarPosicion = async (valorViejo) => {
+      console.log(valorViejo);
       try {
         const res = await fetch(`http://127.0.0.1:8000/update/${valorViejo}/`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({posicion: posicionnueva}),
+          body: JSON.stringify({ posicion: posicionnueva }),
         });
         if (!res.ok) {
           throw new Error("Failed to create company");
         }
-        traerItems(props.id)
-
+        traerItems(props.id);
       } catch (error) {
         console.log(error);
       }
     };
     // modificarPosicion(valorPosicionId)
-    const modificarPosicion2 = async (valorViejo) => {
+    const modificarPosicion2 = async (valorNuevo) => {
       try {
-        const res = await fetch(`http://127.0.0.1:8000/update/${valorViejo}/`, {
+        const res = await fetch(`http://127.0.0.1:8000/update/${valorNuevo}/`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({posicion: posicionId}),
+          body: JSON.stringify({ posicion: posicionId }),
         });
         if (!res.ok) {
           throw new Error("Failed to create company");
         }
-        traerItems(props.id)
-        
+        traerItems(props.id);
       } catch (error) {
         console.log(error);
       }
     };
     // modificarPosicion2(nuevoId)
-    const pasos = async() =>{
+    const pasos = async () => {
       const newItems = [...items];
       const draggedItem = newItems[draggedIndex];
-      
+
       // Remove the item from its original position
       newItems.splice(draggedIndex, 1);
-      
+
       // Insert the item at the new position
       newItems.splice(dropIndex, 0, draggedItem);
-      
+
       setItems(newItems);
       setDragging(false);
-      traerItems(props.id)
-    }
-    const ejecutarCambios =async  ()=>{
-      await pasos()
-      await modificarPosicion(valorPosicionId)
-      await  modificarPosicion2(nuevoId)
-  
-    }
+      traerItems(props.id);
+    };
+    const ejecutarCambios = async () => {
+      await pasos();
+      await modificarPosicion(valorPosicionId);
+      await modificarPosicion2(nuevoId);
+    };
 
     ejecutarCambios();
   };
-  
 
+  const [coloress, setColoress] = useState("hidden");
+  const colores = (e) => {
+    console.log(e);
+    const miDato = document.getElementById(`${e}c`);
+    miDato.classList.toggle("hidden");
+  };
 
+  const [coloresss, setColoresss] = useState("");
+  const coloresse = (e) => {
+    console.log(e);
+    const miDato1 = document.getElementById(`${e}cc`);
+    miDato1.classList.toggle("hidden");
+  };
 
-const [coloress, setColoress] = useState("hidden")
-const colores =(e)=>{
-  console.log(e)
-  const miDato = document.getElementById(`${e}c`)
-  miDato.classList.toggle('hidden')
+  const setColor = async (id, colorNew) => {
+    console.log(colorNew);
+    const miDato1 = document.getElementById(`${id}c`);
+    miDato1.classList.toggle("hidden");
 
-}
-
-const [coloresss, setColoresss] = useState("")
-const coloresse =(e)=>{
-  console.log(e)
-  const miDato1 = document.getElementById(`${e}cc`)
-  miDato1.classList.toggle('hidden')
-
-}
-
-const setColor = async (id,colorNew)=>{
-  console.log(colorNew)
-  const miDato1 = document.getElementById(`${id}c`)
-  miDato1.classList.toggle('hidden')
-  
     try {
       const res = await fetch(`http://127.0.0.1:8000/color/${id}/`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({color: colorNew  }),
+        body: JSON.stringify({ color: colorNew }),
       });
       if (!res.ok) {
         throw new Error("Failed to create company");
       }
-      traerItems(props.id)
-
+      traerItems(props.id);
     } catch (error) {
       console.log(error);
     }
-
-
-}
-
+  };
 
   return (
     <>
-
       <div className="ListadeItems px-2">
         <ul className="">
           {items.map((item, index) => (
-            <li info={index} id={item.id} className={`flex items-center w-full bg-slate-800 mt-3 rounded-lg justify-between prueba break-all min-h-10 pruebita bg-${item.color}-600`}
-            draggable
-            style={{backgroundColor: item.color}}
-            onDragStart={(e) => handleDragStart(e, index, item.posicion)}
-            onDragOver={ handleDragOver}
-            onDrop={(e) => handleDrop(e, index,item.id, item.posicion)} 
-            key={index}>
-              <p id={`${item.id}ite`} className="itemp pl-2 text-lg">{item.nombre} </p>
+            <li
+              info={index}
+              id={item.id}
+              className={`flex items-center w-full bg-slate-800 mt-3 rounded-lg justify-between prueba break-all min-h-10 pruebita bg-${item.color}-600`}
+              draggable
+              style={{ backgroundColor: item.color }}
+              onDragStart={(e) => handleDragStart(e, index, item.posicion)}
+              onDragOver={handleDragOver}
+              onDrop={(e) => handleDrop(e, index, item.id, item.posicion)}
+              key={index}
+            >
+              <p id={`${item.id}ite`} className="itemp pl-2 text-lg">
+                {item.nombre}{" "}
+              </p>
               {/* <p>{item.id}</p> */}
               <div className="colores flex ">
-
-<div id={`${item.id}c`} className= {`flex ${coloress} items-center pl-1 pr-1 bg-slate-900`}>
-<div id={`${item.id}cc`}  className={`w-5 h-4 bg-slate-800  mr-2`} onClick={(e)=>setColor(item.id,"rgb(30 41 59)")}></div>
-  <div id="red" className="w-5 h-4 bg-red-600 mr-2" onClick={(e)=>setColor(item.id,"red")}></div>
-  <div id="green" className="w-5 h-4 bg-green-600"  onClick={(e)=>setColor(item.id,"green")}>    </div>
-  <div id="yellow" className="w-5 h-4 bg-amber-700	 ml-2" onClick={(e)=>setColor(item.id,"rgb(180 83 9)")} >    </div>
-</div>
-<span alt="Elegir color" class="material-symbols-outlined" onClick={(e)=>colores(item.id)}>palette</span>
-              <button
-              id={item.id + "h"}
-              className="transition duration-150"
-              onClick={() => handleDelete(item.id)}
-              >
-               
-              <span class="material-symbols-outlined pr-2">delete</span>
-            </button>
+                <div
+                  id={`${item.id}c`}
+                  className={`flex ${coloress} items-center pl-1 pr-1 bg-slate-900`}
+                >
+                  <div
+                    id={`${item.id}cc`}
+                    className={`w-5 h-4 bg-slate-800  mr-2`}
+                    onClick={(e) => setColor(item.id, "rgb(30 41 59)")}
+                  ></div>
+                  <div
+                    id="red"
+                    className="w-5 h-4 bg-red-600 mr-2"
+                    onClick={(e) => setColor(item.id, "red")}
+                  ></div>
+                  <div
+                    id="green"
+                    className="w-5 h-4 bg-green-600"
+                    onClick={(e) => setColor(item.id, "green")}
+                  >
+                    {" "}
+                  </div>
+                  <div
+                    id="yellow"
+                    className="w-5 h-4 bg-amber-700	 ml-2"
+                    onClick={(e) => setColor(item.id, "rgb(180 83 9)")}
+                  >
+                    {" "}
+                  </div>
                 </div>
+                <span
+                  alt="Elegir color"
+                  class="material-symbols-outlined"
+                  onClick={(e) => colores(item.id)}
+                >
+                  palette
+                </span>
+                <button
+                  id={item.id + "h"}
+                  className="transition duration-150"
+                  onClick={() => handleDelete(item.id)}
+                >
+                  <span class="material-symbols-outlined pr-2">delete</span>
+                </button>
+              </div>
             </li>
           ))}
         </ul>
@@ -325,7 +320,7 @@ const setColor = async (id,colorNew)=>{
             <button
               type="submit"
               className=" mt-3 px-2 rounded- bg-blue-600 rounded-lg ml-2"
-              onClick={()=>createCard(props.id)}
+              onClick={() => createCard(props.id)}
               // onClick={agregarItem}
             >
               Add
@@ -333,7 +328,6 @@ const setColor = async (id,colorNew)=>{
           </form>
         </details>
       </div>
-      
     </>
   );
 }
